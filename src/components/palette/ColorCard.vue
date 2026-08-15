@@ -5,9 +5,15 @@
     @click="copyHex"
     title="Click to copy hex color"
   >
-    <span class="hex">
-      {{ copied ? 'Copied!' : color.hex }}
-    </span>
+    <div class="color-values">
+      <span class="hex">
+        {{ copied ? 'Copied!' : color.hex }}
+      </span>
+
+      <span class="rgb">
+        {{ rgbValue }}
+      </span>
+    </div>
 
     <div class="actions">
       <button
@@ -29,7 +35,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import type { Color } from '../../types';
 import ColorWheelModal from '../modals/ColorWheelModal.vue';
 
@@ -43,6 +49,15 @@ const emit = defineEmits<{
 
 const showModal = ref(false);
 const copied = ref(false);
+
+const rgbValue = computed(() => {
+  const hex = props.color.hex.replace('#', '');
+  const red = parseInt(hex.slice(0, 2), 16);
+  const green = parseInt(hex.slice(2, 4), 16);
+  const blue = parseInt(hex.slice(4, 6), 16);
+
+  return `rgb(${red}, ${green}, ${blue})`;
+});
 
 function openEditor() {
   showModal.value = true;
@@ -78,16 +93,28 @@ function handleUpdate(newHex: string) {
   position: relative;
   cursor: pointer;
 
-  .hex {
-    padding: 0.5rem 1rem;
-    background: rgba(0, 0, 0, 0.6);
-    color: white;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    letter-spacing: 0.5px;
-    backdrop-filter: blur(4px);
-    user-select: none;
+  .color-values {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+
+    .hex,
+    .rgb {
+      padding: 0.5rem 1rem;
+      background: rgba(0, 0, 0, 0.6);
+      color: white;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      backdrop-filter: blur(4px);
+      user-select: none;
+    }
+
+    .rgb {
+      font-size: 0.8rem;
+    }
   }
 
   .actions {
