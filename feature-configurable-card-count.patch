@@ -1,0 +1,186 @@
+From 8541264bd60e2b216b82f1995c9e8defb87ef448 Mon Sep 17 00:00:00 2001
+From: OpenAI Patch Generator <patch@example.invalid>
+Date: Sat, 15 Aug 2026 15:15:03 +0000
+Subject: [PATCH] feat: make color card count configurable
+
+---
+ src/App.vue                         | 11 ++++++++-
+ src/components/layout/AppHeader.vue | 35 ++++++++++++++++++++++++++++-
+ src/composables/usePalette.ts       | 27 ++++++++++++++++++----
+ 3 files changed, 67 insertions(+), 6 deletions(-)
+
+diff --git a/src/App.vue b/src/App.vue
+index 0acc445..bf4ec3f 100644
+--- a/src/App.vue
++++ b/src/App.vue
+@@ -1,7 +1,9 @@
+ <template>
+   <AppHeader
++    :color-count="colorCount"
+     @generate="regenerate"
+     @harmonyChange="handleHarmonyChange"
++    @color-count-change="setColorCount"
+   />
+   <PaletteGrid
+     :colors="colors"
+@@ -14,7 +16,14 @@ import AppHeader from './components/layout/AppHeader.vue';
+ import PaletteGrid from './components/palette/PaletteGrid.vue';
+ import { usePalette } from './composables/usePalette';
+ 
+-const { colors, regenerate, updateColor, setHarmonyType } = usePalette();
++const {
++  colors,
++  colorCount,
++  regenerate,
++  updateColor,
++  setHarmonyType,
++  setColorCount
++} = usePalette();
+ 
+ function handleHarmonyChange(type: 'none' | 'complementary' | 'analogous') {
+   setHarmonyType(type);
+diff --git a/src/components/layout/AppHeader.vue b/src/components/layout/AppHeader.vue
+index eabb253..910175c 100644
+--- a/src/components/layout/AppHeader.vue
++++ b/src/components/layout/AppHeader.vue
+@@ -12,6 +12,17 @@
+         </select>
+       </label>
+ 
++      <label>
++        Cards
++        <input
++          type="number"
++          min="1"
++          step="1"
++          :value="colorCount"
++          @change="onColorCountChange"
++        />
++      </label>
++
+       <button @click="$emit('generate')">Generate</button>
+     </div>
+   </header>
+@@ -20,9 +31,14 @@
+ <script setup lang="ts">
+ import { ref } from 'vue';
+ 
++const props = defineProps<{
++  colorCount: number;
++}>();
++
+ const emit = defineEmits<{
+   generate: [];
+   harmonyChange: [type: 'none' | 'complementary' | 'analogous'];
++  colorCountChange: [count: number];
+ }>();
+ 
+ const selectedHarmony = ref<'none' | 'complementary' | 'analogous'>('none');
+@@ -30,6 +46,18 @@ const selectedHarmony = ref<'none' | 'complementary' | 'analogous'>('none');
+ function onHarmonyChange() {
+   emit('harmonyChange', selectedHarmony.value);
+ }
++
++function onColorCountChange(event: Event) {
++  const input = event.target as HTMLInputElement;
++  const count = Number.parseInt(input.value, 10);
++
++  if (!Number.isFinite(count) || count < 1) {
++    input.value = String(props.colorCount);
++    return;
++  }
++
++  emit('colorCountChange', count);
++}
+ </script>
+ 
+ <style lang="scss" scoped>
+@@ -66,7 +94,8 @@ function onHarmonyChange() {
+       font-weight: 500;
+     }
+ 
+-    select {
++    select,
++    input {
+       padding: 0.4rem 0.8rem;
+       border: 1px solid #ddd;
+       border-radius: 6px;
+@@ -74,6 +103,10 @@ function onHarmonyChange() {
+       background: white;
+     }
+ 
++    input {
++      width: 5rem;
++    }
++
+     button {
+       padding: 0.5rem 1.5rem;
+       border: none;
+diff --git a/src/composables/usePalette.ts b/src/composables/usePalette.ts
+index 107f0f8..023af07 100644
+--- a/src/composables/usePalette.ts
++++ b/src/composables/usePalette.ts
+@@ -3,18 +3,20 @@ import { generatePalette } from '../utils/colors';
+ import { generateHarmonyPalette } from '../utils/harmony';
+ import type { Color } from '../types';
+ 
++const MIN_COUNT = 1;
+ const DEFAULT_COUNT = 5;
+ 
+ export function usePalette() {
++  const colorCount = ref(DEFAULT_COUNT);
+   const colors = ref<Color[]>(
+-    generatePalette(DEFAULT_COUNT).map(hex => ({ hex }))
++    generatePalette(colorCount.value).map(hex => ({ hex }))
+   );
+ 
+   const harmonyType = ref<'none' | 'complementary' | 'analogous'>('none');
+ 
+   function regenerate() {
+     if (harmonyType.value === 'none') {
+-      colors.value = generatePalette(colors.value.length).map(hex => ({ hex }));
++      colors.value = generatePalette(colorCount.value).map(hex => ({ hex }));
+     } else {
+       generateHarmony();
+     }
+@@ -28,12 +30,21 @@ export function usePalette() {
+ 
+     if (harmonyColors.length === 0) return;
+ 
+-    const targetCount = colors.value.length;
++    const targetCount = colorCount.value;
+     colors.value = Array.from({ length: targetCount }, (_, i) => ({
+       hex: harmonyColors[i % harmonyColors.length]
+     }));
+   }
+ 
++  function setColorCount(count: number) {
++    const normalizedCount = Math.max(MIN_COUNT, Math.trunc(count));
++
++    if (!Number.isFinite(normalizedCount)) return;
++
++    colorCount.value = normalizedCount;
++    regenerate();
++  }
++
+   function setHarmonyType(type: 'none' | 'complementary' | 'analogous') {
+     harmonyType.value = type;
+   }
+@@ -44,5 +55,13 @@ export function usePalette() {
+     }
+   }
+ 
+-  return { colors, regenerate, setHarmonyType, harmonyType, updateColor };
++  return {
++    colors,
++    colorCount,
++    regenerate,
++    setColorCount,
++    setHarmonyType,
++    harmonyType,
++    updateColor
++  };
+ }
+-- 
+2.47.3
+

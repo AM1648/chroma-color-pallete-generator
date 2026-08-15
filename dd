@@ -1,0 +1,61 @@
+git fetch origin
+
+git switch dev
+git pull origin dev
+
+git switch -c deploy-github-pages
+
+git apply --check github-pages-deploy.patch
+git apply github-pages-deploy.patch
+
+git status
+git diff
+
+git add vite.config.ts .github/workflows/deploy-pages.yml
+git commit -m "chore: Add GitHub Pages deployment"
+
+git push -u origin deploy-github-pages
+
+git fetch origin
+
+git switch dev
+git pull origin dev
+
+git rebase origin/main
+git push origin dev
+
+
+# Make sure you have the latest remote branches
+git fetch origin
+
+# Switch to dev
+git switch dev
+
+# Update local dev
+git pull origin dev
+
+# Create a new feature branch from dev
+git switch -c feat/copy-color-hex
+
+# Apply the patch
+git apply /path/to/copy-color-hex.patch
+
+# Review the changes
+git diff
+
+# Stage and commit
+git add src/components/palette/ColorCard.vue
+git commit -m "add click to copy color hex"
+
+# Push the new branch
+git push -u origin feature/copy-color-hex
+
+npm run build
+
+git diff
+
+git add src/components/palette/ColorCard.vue
+
+git commit -m "add click to copy color hex"
+
+git push -u origin feature/copy-color-hex

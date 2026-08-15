@@ -3,18 +3,20 @@ import { generatePalette } from '../utils/colors';
 import { generateHarmonyPalette } from '../utils/harmony';
 import type { Color } from '../types';
 
+const MIN_COUNT = 1;
 const DEFAULT_COUNT = 5;
 
 export function usePalette() {
+  const colorCount = ref(DEFAULT_COUNT);
   const colors = ref<Color[]>(
-    generatePalette(DEFAULT_COUNT).map(hex => ({ hex }))
+    generatePalette(colorCount.value).map(hex => ({ hex }))
   );
 
   const harmonyType = ref<'none' | 'complementary' | 'analogous'>('none');
 
   function regenerate() {
     if (harmonyType.value === 'none') {
-      colors.value = generatePalette(colors.value.length).map(hex => ({ hex }));
+      colors.value = generatePalette(colorCount.value).map(hex => ({ hex }));
     } else {
       generateHarmony();
     }
@@ -28,10 +30,19 @@ export function usePalette() {
 
     if (harmonyColors.length === 0) return;
 
-    const targetCount = colors.value.length;
+    const targetCount = colorCount.value;
     colors.value = Array.from({ length: targetCount }, (_, i) => ({
       hex: harmonyColors[i % harmonyColors.length]
     }));
+  }
+
+  function setColorCount(count: number) {
+    const normalizedCount = Math.max(MIN_COUNT, Math.trunc(count));
+
+    if (!Number.isFinite(normalizedCount)) return;
+
+    colorCount.value = normalizedCount;
+    regenerate();
   }
 
   function setHarmonyType(type: 'none' | 'complementary' | 'analogous') {
@@ -44,5 +55,13 @@ export function usePalette() {
     }
   }
 
-  return { colors, regenerate, setHarmonyType, harmonyType, updateColor };
+  return {
+    colors,
+    colorCount,
+    regenerate,
+    setColorCount,
+    setHarmonyType,
+    harmonyType,
+    updateColor
+  };
 }

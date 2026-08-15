@@ -1,0 +1,27 @@
+diff --git a/src/components/layout/AppHeader.vue b/src/components/layout/AppHeader.vue
+--- a/src/components/layout/AppHeader.vue
++++ b/src/components/layout/AppHeader.vue
+@@ -18,7 +18,7 @@
+ </template>
+ 
+ <script setup lang="ts">
+-import { ref, watch } from 'vue';
++import { ref } from 'vue';
+ 
+ const emit = defineEmits<{
+   generate: [];
+
+diff --git a/src/components/modals/ColorWheelModal.vue b/src/components/modals/ColorWheelModal.vue
+--- a/src/components/modals/ColorWheelModal.vue
++++ b/src/components/modals/ColorWheelModal.vue
+@@ -48,10 +48,6 @@ watch(() => props.visible, (visible) => {
+   }
+ });
+ 
+-function handleColorChange(color: any) {
+-  currentHex.value = color.hex;
+-}
+-
+ function close() {
+   emit('close');
+ }

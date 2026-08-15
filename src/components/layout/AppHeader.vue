@@ -12,6 +12,17 @@
         </select>
       </label>
 
+      <label>
+        Cards
+        <input
+          type="number"
+          min="1"
+          step="1"
+          :value="colorCount"
+          @change="onColorCountChange"
+        />
+      </label>
+
       <button @click="$emit('generate')">Generate</button>
     </div>
   </header>
@@ -20,15 +31,32 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
+const props = defineProps<{
+  colorCount: number;
+}>();
+
 const emit = defineEmits<{
   generate: [];
   harmonyChange: [type: 'none' | 'complementary' | 'analogous'];
+  colorCountChange: [count: number];
 }>();
 
 const selectedHarmony = ref<'none' | 'complementary' | 'analogous'>('none');
 
 function onHarmonyChange() {
   emit('harmonyChange', selectedHarmony.value);
+}
+
+function onColorCountChange(event: Event) {
+  const input = event.target as HTMLInputElement;
+  const count = Number.parseInt(input.value, 10);
+
+  if (!Number.isFinite(count) || count < 1) {
+    input.value = String(props.colorCount);
+    return;
+  }
+
+  emit('colorCountChange', count);
 }
 </script>
 
@@ -66,12 +94,17 @@ function onHarmonyChange() {
       font-weight: 500;
     }
 
-    select {
+    select,
+    input {
       padding: 0.4rem 0.8rem;
       border: 1px solid #ddd;
       border-radius: 6px;
       font-size: 0.9rem;
       background: white;
+    }
+
+    input {
+      width: 5rem;
     }
 
     button {
