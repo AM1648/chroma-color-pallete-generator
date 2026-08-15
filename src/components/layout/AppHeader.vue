@@ -5,10 +5,17 @@
     <div class="controls">
       <label>
         Harmony
-        <select v-model="selectedHarmony" @change="onHarmonyChange">
+        <select
+          v-model="selectedHarmony"
+          @change="onHarmonyChange"
+        >
           <option value="none">Random</option>
-          <option value="complementary">Complementary</option>
-          <option value="analogous">Analogous</option>
+          <option value="complementary">
+            Complementary
+          </option>
+          <option value="analogous">
+            Analogous
+          </option>
         </select>
       </label>
 
@@ -23,7 +30,27 @@
         />
       </label>
 
-      <button @click="$emit('generate')">Generate</button>
+      <button
+        type="button"
+        :disabled="colorCount <= 1"
+        @click="$emit('removeColor')"
+      >
+        - Color
+      </button>
+
+      <button
+        type="button"
+        @click="$emit('addColor')"
+      >
+        + Color
+      </button>
+
+      <button
+        type="button"
+        @click="$emit('generate')"
+      >
+        Generate
+      </button>
     </div>
   </header>
 </template>
@@ -37,11 +64,16 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   generate: [];
-  harmonyChange: [type: 'none' | 'complementary' | 'analogous'];
+  harmonyChange: [
+    type: 'none' | 'complementary' | 'analogous'
+  ];
   colorCountChange: [count: number];
+  addColor: [];
+  removeColor: [];
 }>();
 
-const selectedHarmony = ref<'none' | 'complementary' | 'analogous'>('none');
+const selectedHarmony =
+  ref<'none' | 'complementary' | 'analogous'>('none');
 
 function onHarmonyChange() {
   emit('harmonyChange', selectedHarmony.value);
@@ -74,7 +106,7 @@ function onColorCountChange(event: Event) {
   background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(8px);
   z-index: 10;
-  border-bottom: 1px solid rgba(0,0,0,0.05);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 
   h1 {
     font-size: 1.25rem;
@@ -118,8 +150,13 @@ function onColorCountChange(event: Event) {
       cursor: pointer;
       transition: opacity 0.2s;
 
-      &:hover {
+      &:hover:not(:disabled) {
         opacity: 0.8;
+      }
+
+      &:disabled {
+        opacity: 0.35;
+        cursor: not-allowed;
       }
     }
   }

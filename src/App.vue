@@ -4,7 +4,10 @@
     @generate="regenerate"
     @harmonyChange="handleHarmonyChange"
     @color-count-change="setColorCount"
+    @add-color="addColor"
+    @remove-color="removeColor"
   />
+
   <PaletteGrid
     :colors="colors"
     @update="updateColor"
@@ -22,10 +25,14 @@ const {
   regenerate,
   updateColor,
   setHarmonyType,
-  setColorCount
+  setColorCount,
+  addColor,
+  removeColor
 } = usePalette();
 
-function handleHarmonyChange(type: 'none' | 'complementary' | 'analogous') {
+function handleHarmonyChange(
+  type: 'none' | 'complementary' | 'analogous'
+) {
   setHarmonyType(type);
 }
 </script>
