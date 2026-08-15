@@ -1,18 +1,19 @@
-![نمای نهایی پروژه Chroma](images/top%20image.png)
+# Chroma | Color Palette Generator
 
-# گزارش آزمایش فرانت‌اند ایستا با استقرار خودکار
+![نمای نهایی پروژه Chroma](images/top%20image.png)
 
 ## 1. معرفی پروژه
 
+<div dir='rtl'>
 **Chroma | Color Palette Generator** یک نرم‌افزار فرانت‌اند ایستا برای تولید، مشاهده و ویرایش پالت‌های رنگی است. هدف از پیاده‌سازی این پروژه علاوه بر ساخت یک رابط کاربری کاربردی، تمرین عملی فرآیند توسعه نرم‌افزار با **Git و GitHub**، کار گروهی روی یک Repository مشترک، استفاده از Branch و Pull Request، حل Conflict و در نهایت استقرار خودکار پروژه با **GitHub Actions** بوده است.
+</div>
 
 پروژه با **Vue 3، TypeScript، SCSS و Vite** توسعه داده شده و تمام قابلیت‌های آن در سمت کاربر اجرا می‌شوند؛ بنابراین برای اجرای برنامه به Backend یا Database نیاز نیست. برای عملیات رنگ از کتابخانه‌های `vue-color` و `@ctrl/tinycolor` نیز استفاده شده است.
 
 لینک‌های اصلی پروژه:
 
-- **GitHub Repository:** https://github.com/AM1648/chroma-color-pallete-generator
 - **GitHub Pages:** https://am1648.github.io/chroma-color-pallete-generator/
-- **GitHub Project / Kanban:** https://github.com/users/AM1648/projects/2
+- **Kanban Board:** https://github.com/users/AM1648/projects/2
 
 پروژه در ابتدا از یک ساختار ساده شامل پنج رنگ تصادفی و یک دکمه Generate شروع شد و سپس قابلیت‌ها در چند مرحله و از طریق Branchها و Pull Requestهای جداگانه به آن اضافه شدند. این روش باعث شد تاریخچه توسعه پروژه شامل Commitهای مشخص و معنادار باشد و هر قابلیت به‌صورت مستقل قابل بررسی و ادغام باشد.
 
@@ -29,13 +30,7 @@
 - قفل‌کردن Color Cardها؛ رنگ‌های Lock شده هنگام Generate حفظ می‌شوند.
 - تغییر مستقیم تعداد Color Cardها از طریق ورودی عددی.
 - اضافه یا کم کردن Color Cardها با کنترل‌های `+ Color` و `- Color`.
-- تولید Palette بر اساس Harmonyهای مختلف:
-  - Random
-  - Monochromatic
-  - Complementary
-  - Analogous
-  - Triadic
-  - Square
+- تولید Palette بر اساس Harmonyهای مختلف
 
 در طراحی اولیه ایده‌های بیشتری مانند History، Favorites، دسته‌بندی رنگ‌ها و Dark Mode نیز بررسی شدند، اما برای اینکه گزارش وضعیت واقعی Repository را نشان دهد، در این بخش فقط قابلیت‌هایی ذکر شده‌اند که در نسخه فعلی پروژه پیاده‌سازی شده‌اند.
 
@@ -84,7 +79,7 @@ dev
  ↓
 Feature / Fix Branch
  ↓
-تغییر و تست کد
+Apply changes to codebase
  ↓
 git add / git commit
  ↓
@@ -106,24 +101,17 @@ Merge
 در طول پروژه بیش از **۲۰ Commit معنادار** ایجاد شد. Commitها صرفاً برای افزایش تعداد Commit ساخته نشدند و هر کدام یک تغییر مشخص در پروژه را ثبت می‌کردند. موضوع Commitها شامل مواردی مانند موارد زیر بود:
 
 - ایجاد ساختار اولیه Vue + TypeScript.
-- تنظیم فایل `.gitignore`.
 - ساخت نسخه اولیه Color Palette Generator.
 - اضافه کردن Color Picker و امکان Edit.
 - اضافه کردن HEX/RGB و قابلیت Copy.
 - اضافه کردن Harmonyها.
-- اضافه کردن Harmonyهای بیشتر.
 - قابل تنظیم کردن تعداد کارت‌ها.
 - اضافه کردن کنترل‌های Add/Remove.
 - رفع خطاهای TypeScript و Build.
 - اضافه کردن Color Lock.
 - اصلاح GitHub Pages Workflow.
-- تغییرات نهایی و اصلاح عنوان پروژه.
 
 وجود این Commitهای کوچک‌تر و مشخص باعث شد تاریخچه توسعه قابل دنبال کردن باشد و در هنگام بروز مشکل نیز تشخیص تغییر مربوطه ساده‌تر شود.
-
-### استفاده از `.gitignore`
-
-از فایل `.gitignore` برای جلوگیری از Commit شدن فایل‌هایی استفاده شد که نباید وارد Repository شوند؛ به‌خصوص Dependencyهای محلی و فایل‌های تولیدشده در زمان Build. در عین حال `package-lock.json` در Repository نگه داشته شد تا نسخه Dependencyها بین اعضای تیم و محیط GitHub Actions یکسان و قابل تکرار باشد.
 
 ### Pull Request و Review
 
@@ -178,53 +166,7 @@ Merge
 
 ## 5. استقرار خودکار با GitHub Actions
 
-یکی دیگر از الزامات اصلی آزمایش، استقرار خودکار Static Frontend روی GitHub Pages بود. برای این منظور یک GitHub Actions Workflow در مسیر زیر ایجاد شد:
-
-```text
-.github/workflows/deploy-pages.yml
-```
-
-Workflow با Push شدن تغییر جدید روی `main` اجرا می‌شود و علاوه بر آن امکان اجرای دستی با `workflow_dispatch` نیز وجود دارد.
-
-مراحل اصلی Workflow عبارت‌اند از:
-
-1. دریافت Source Code با `actions/checkout`.
-2. آماده‌سازی Node.js.
-3. نصب دقیق Dependencyها با:
-
-```bash
-npm ci
-```
-
-4. Build پروژه با:
-
-```bash
-npm run build
-```
-
-5. آماده‌سازی GitHub Pages.
-6. Upload شدن خروجی پوشه `dist`.
-7. Deploy Artifact روی GitHub Pages.
-
-نمای ساده این فرآیند:
-
-```text
-Merge / Push to main
-        ↓
-GitHub Actions
-        ↓
-Checkout Repository
-        ↓
-Setup Node.js
-        ↓
-npm ci
-        ↓
-npm run build
-        ↓
-Upload dist
-        ↓
-Deploy GitHub Pages
-```
+یکی دیگر از الزامات اصلی آزمایش، استقرار خودکار Static Frontend روی GitHub Pages بود. برای این منظور یک GitHub Actions Workflow ایجاد شد.
 
 ![اجرای موفق GitHub Actions](images/github%20action.png)
 
@@ -291,31 +233,3 @@ git apply color-lock.patch
 پس از ارسال خطای واقعی به مدل، Patch اصلاح شد. یک نسخه دیگر نیز با خطای `corrupt patch` مواجه شد و در ادامه Patch به‌صورت صحیح تولید و مجدداً با Git بررسی شد. این روند نمونه‌ای از تعامل چندمرحله‌ای با مدل است؛ یعنی پاسخ AI به‌عنوان نتیجه نهایی فرض نشد و خروجی آن با ابزار واقعی تست و در صورت نیاز اصلاح شد.
 
 مدل دقیق ChatGPT در فایل‌های Export شده مشخص نشده است، بنابراین در این گزارش بدون حدس زدن نام مدل، از عنوان **ChatGPT** استفاده شده است.
-
----
-
-## 7. نتیجه‌گیری
-
-در این آزمایش یک Static Frontend واقعی با نام **Chroma** توسعه داده شد، اما بخش مهم پروژه تنها پیاده‌سازی UI نبود. فرآیند توسعه به شکلی انجام شد که مفاهیم اصلی Git و GitHub نیز به‌صورت عملی مورد استفاده قرار گیرند.
-
-در طول پروژه:
-
-- Repository مشترک برای اعضای تیم استفاده شد.
-- `.gitignore` در پروژه وجود داشت.
-- بیش از ۲۰ Commit معنادار ثبت شد.
-- از `main`، `dev` و چندین Feature/Fix Branch استفاده شد.
-- تغییرات از طریق Pull Request ادغام شدند.
-- Branch `main` با Rule و Approval محافظت شد.
-- حداقل دو Conflict واقعی حل شد.
-- فعالیت‌ها از طریق Kanban Board مدیریت شدند.
-- Build و Deployment با GitHub Actions خودکار شد.
-- نسخه نهایی روی GitHub Pages در دسترس قرار گرفت.
-- استفاده از ابزارهای هوش مصنوعی و نحوه تعامل با آن‌ها مستند شد.
-
-در نتیجه، پروژه علاوه بر ارائه یک Color Palette Generator قابل استفاده، تجربه عملی Branching، Commit، Merge، Pull Request، Code Review، Conflict Resolution و CI/CD را نیز فراهم کرد.
-
-### لینک‌های نهایی
-
-- **Repository:** https://github.com/AM1648/chroma-color-pallete-generator
-- **Live Application:** https://am1648.github.io/chroma-color-pallete-generator/
-- **Kanban Board:** https://github.com/users/AM1648/projects/2
