@@ -5,7 +5,10 @@
     <div class="controls">
       <label>
         Harmony
-        <select v-model="selectedHarmony" @change="onHarmonyChange">
+        <select
+          v-model="selectedHarmony"
+          @change="onHarmonyChange"
+        >
           <option value="none">Random</option>
           <option value="monochromatic">Monochromatic</option>
           <option value="complementary">Complementary</option>
@@ -15,7 +18,38 @@
         </select>
       </label>
 
-      <button @click="$emit('generate')">Generate</button>
+      <label>
+        Cards
+        <input
+          type="number"
+          min="1"
+          step="1"
+          :value="colorCount"
+          @change="onColorCountChange"
+        />
+      </label>
+
+      <button
+        type="button"
+        :disabled="colorCount <= 1"
+        @click="$emit('removeColor')"
+      >
+        - Color
+      </button>
+
+      <button
+        type="button"
+        @click="$emit('addColor')"
+      >
+        + Color
+      </button>
+
+      <button
+        type="button"
+        @click="$emit('generate')"
+      >
+        Generate
+      </button>
     </div>
   </header>
 </template>
@@ -23,15 +57,37 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-const emit = defineEmits<{
-  generate: [];
-  harmonyChange: [type: 'none' | 'monochromatic' | 'complementary' | 'analogous' | 'triadic' | 'square'];
+const props = defineProps<{
+  colorCount: number;
 }>();
 
-const selectedHarmony = ref<'none' | 'monochromatic' | 'complementary' | 'analogous' | 'triadic' | 'square'>('none');
+const emit = defineEmits<{
+  generate: [];
+  harmonyChange: [
+    type: 'none' | 'monochromatic' | 'complementary' | 'analogous' | 'triadic' | 'square'
+  ];
+  colorCountChange: [count: number];
+  addColor: [];
+  removeColor: [];
+}>();
+
+const selectedHarmony =
+  ref<'none' | 'monochromatic' | 'complementary' | 'analogous' | 'triadic' | 'square'>('none');
 
 function onHarmonyChange() {
   emit('harmonyChange', selectedHarmony.value);
+}
+
+function onColorCountChange(event: Event) {
+  const input = event.target as HTMLInputElement;
+  const count = Number.parseInt(input.value, 10);
+
+  if (!Number.isFinite(count) || count < 1) {
+    input.value = String(props.colorCount);
+    return;
+  }
+
+  emit('colorCountChange', count);
 }
 </script>
 
@@ -49,7 +105,7 @@ function onHarmonyChange() {
   background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(8px);
   z-index: 10;
-  border-bottom: 1px solid rgba(0,0,0,0.05);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 
   h1 {
     font-size: 1.25rem;
@@ -69,12 +125,17 @@ function onHarmonyChange() {
       font-weight: 500;
     }
 
-    select {
+    select,
+    input {
       padding: 0.4rem 0.8rem;
       border: 1px solid #ddd;
       border-radius: 6px;
       font-size: 0.9rem;
       background: white;
+    }
+
+    input {
+      width: 5rem;
     }
 
     button {
@@ -88,8 +149,13 @@ function onHarmonyChange() {
       cursor: pointer;
       transition: opacity 0.2s;
 
-      &:hover {
+      &:hover:not(:disabled) {
         opacity: 0.8;
+      }
+
+      &:disabled {
+        opacity: 0.35;
+        cursor: not-allowed;
       }
     }
   }
