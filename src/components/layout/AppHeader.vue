@@ -1,6 +1,6 @@
 <template>
   <header class="app-header">
-    <h1>🎨 Color Palette Generator</h1>
+    <h1>🎨 Chroma | Color Palette Generator</h1>
 
     <div class="controls">
       <label>
