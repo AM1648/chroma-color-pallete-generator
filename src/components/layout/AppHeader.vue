@@ -12,6 +12,14 @@
         </select>
       </label>
 
+      <button
+        type="button"
+        :disabled="colorCount <= 1"
+        @click="$emit('removeColor')"
+      >
+        - Color
+      </button>
+      <button type="button" @click="$emit('addColor')">+ Color</button>
       <button @click="$emit('generate')">Generate</button>
     </div>
   </header>
@@ -20,9 +28,15 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
+defineProps<{
+  colorCount: number;
+}>();
+
 const emit = defineEmits<{
   generate: [];
   harmonyChange: [type: 'none' | 'complementary' | 'analogous'];
+  addColor: [];
+  removeColor: [];
 }>();
 
 const selectedHarmony = ref<'none' | 'complementary' | 'analogous'>('none');
@@ -85,8 +99,13 @@ function onHarmonyChange() {
       cursor: pointer;
       transition: opacity 0.2s;
 
-      &:hover {
+      &:hover:not(:disabled) {
         opacity: 0.8;
+      }
+
+      &:disabled {
+        opacity: 0.35;
+        cursor: not-allowed;
       }
     }
   }

@@ -1,0 +1,160 @@
+From 1a48b064e3ded71f3703fa691a2fd7045bc47d4c Mon Sep 17 00:00:00 2001
+From: OpenAI Patch Generator <patch@example.invalid>
+Date: Sat, 15 Aug 2026 15:15:17 +0000
+Subject: [PATCH] feat: add controls to add and remove color cards
+
+---
+ src/App.vue                         | 12 +++++++++++-
+ src/components/layout/AppHeader.vue | 21 ++++++++++++++++++++-
+ src/composables/usePalette.ts       | 29 ++++++++++++++++++++++++++---
+ 3 files changed, 57 insertions(+), 5 deletions(-)
+
+diff --git a/src/App.vue b/src/App.vue
+index 0acc445..dcf91be 100644
+--- a/src/App.vue
++++ b/src/App.vue
+@@ -1,7 +1,10 @@
+ <template>
+   <AppHeader
++    :color-count="colors.length"
+     @generate="regenerate"
+     @harmonyChange="handleHarmonyChange"
++    @add-color="addColor"
++    @remove-color="removeColor"
+   />
+   <PaletteGrid
+     :colors="colors"
+@@ -14,7 +17,14 @@ import AppHeader from './components/layout/AppHeader.vue';
+ import PaletteGrid from './components/palette/PaletteGrid.vue';
+ import { usePalette } from './composables/usePalette';
+ 
+-const { colors, regenerate, updateColor, setHarmonyType } = usePalette();
++const {
++  colors,
++  regenerate,
++  updateColor,
++  setHarmonyType,
++  addColor,
++  removeColor
++} = usePalette();
+ 
+ function handleHarmonyChange(type: 'none' | 'complementary' | 'analogous') {
+   setHarmonyType(type);
+diff --git a/src/components/layout/AppHeader.vue b/src/components/layout/AppHeader.vue
+index eabb253..1928f90 100644
+--- a/src/components/layout/AppHeader.vue
++++ b/src/components/layout/AppHeader.vue
+@@ -12,6 +12,14 @@
+         </select>
+       </label>
+ 
++      <button
++        type="button"
++        :disabled="colorCount <= 1"
++        @click="$emit('removeColor')"
++      >
++        - Color
++      </button>
++      <button type="button" @click="$emit('addColor')">+ Color</button>
+       <button @click="$emit('generate')">Generate</button>
+     </div>
+   </header>
+@@ -20,9 +28,15 @@
+ <script setup lang="ts">
+ import { ref } from 'vue';
+ 
++defineProps<{
++  colorCount: number;
++}>();
++
+ const emit = defineEmits<{
+   generate: [];
+   harmonyChange: [type: 'none' | 'complementary' | 'analogous'];
++  addColor: [];
++  removeColor: [];
+ }>();
+ 
+ const selectedHarmony = ref<'none' | 'complementary' | 'analogous'>('none');
+@@ -85,9 +99,14 @@ function onHarmonyChange() {
+       cursor: pointer;
+       transition: opacity 0.2s;
+ 
+-      &:hover {
++      &:hover:not(:disabled) {
+         opacity: 0.8;
+       }
++
++      &:disabled {
++        opacity: 0.35;
++        cursor: not-allowed;
++      }
+     }
+   }
+ }
+diff --git a/src/composables/usePalette.ts b/src/composables/usePalette.ts
+index 107f0f8..fd49af7 100644
+--- a/src/composables/usePalette.ts
++++ b/src/composables/usePalette.ts
+@@ -3,6 +3,7 @@ import { generatePalette } from '../utils/colors';
+ import { generateHarmonyPalette } from '../utils/harmony';
+ import type { Color } from '../types';
+ 
++const MINIMUM_COLORS = 1;
+ const DEFAULT_COUNT = 5;
+ 
+ export function usePalette() {
+@@ -20,7 +21,7 @@ export function usePalette() {
+     }
+   }
+ 
+-  function generateHarmony() {
++  function generateHarmony(targetCount = colors.value.length) {
+     // Use random base
+     const baseHex = generatePalette(1)[0];
+ 
+@@ -28,12 +29,26 @@ export function usePalette() {
+ 
+     if (harmonyColors.length === 0) return;
+ 
+-    const targetCount = colors.value.length;
+     colors.value = Array.from({ length: targetCount }, (_, i) => ({
+       hex: harmonyColors[i % harmonyColors.length]
+     }));
+   }
+ 
++  function addColor() {
++    if (harmonyType.value === 'none') {
++      colors.value.push({ hex: generatePalette(1)[0] });
++      return;
++    }
++
++    generateHarmony(colors.value.length + 1);
++  }
++
++  function removeColor() {
++    if (colors.value.length <= MINIMUM_COLORS) return;
++
++    colors.value = colors.value.slice(0, -1);
++  }
++
+   function setHarmonyType(type: 'none' | 'complementary' | 'analogous') {
+     harmonyType.value = type;
+   }
+@@ -44,5 +59,13 @@ export function usePalette() {
+     }
+   }
+ 
+-  return { colors, regenerate, setHarmonyType, harmonyType, updateColor };
++  return {
++    colors,
++    regenerate,
++    addColor,
++    removeColor,
++    setHarmonyType,
++    harmonyType,
++    updateColor
++  };
+ }
+-- 
+2.47.3
+
