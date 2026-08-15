@@ -30,9 +30,7 @@ const {
   removeColor
 } = usePalette();
 
-function handleHarmonyChange(
-  type: 'none' | 'complementary' | 'analogous'
-) {
+function handleHarmonyChange(type: 'none' | 'monochromatic' | 'complementary' | 'analogous' | 'triadic' | 'square') {
   setHarmonyType(type);
 }
 </script>

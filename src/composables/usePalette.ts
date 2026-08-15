@@ -20,7 +20,7 @@ export function usePalette() {
     }))
   );
 
-  const harmonyType = ref<HarmonyType>('none');
+  const harmonyType = ref<'none' | 'monochromatic' | 'complementary' | 'analogous' | 'triadic' | 'square'>('none');
 
   function regenerate() {
     if (harmonyType.value === 'none') {
@@ -42,8 +42,11 @@ export function usePalette() {
     const harmonyColors = generateHarmonyPalette(
       baseHex,
       harmonyType.value as
+        | 'monochromatic'
         | 'complementary'
         | 'analogous'
+        | 'triadic' 
+        | 'square'
     );
 
     if (harmonyColors.length === 0) {
@@ -110,7 +113,7 @@ export function usePalette() {
     generateHarmony();
   }
 
-  function setHarmonyType(type: HarmonyType) {
+  function setHarmonyType(type: 'none' | 'monochromatic' | 'complementary' | 'analogous' | 'triadic' | 'square') {
     harmonyType.value = type;
   }
 

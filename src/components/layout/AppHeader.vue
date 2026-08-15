@@ -10,12 +10,11 @@
           @change="onHarmonyChange"
         >
           <option value="none">Random</option>
-          <option value="complementary">
-            Complementary
-          </option>
-          <option value="analogous">
-            Analogous
-          </option>
+          <option value="monochromatic">Monochromatic</option>
+          <option value="complementary">Complementary</option>
+          <option value="analogous">Analogous</option>
+          <option value="triadic">Triadic</option>
+          <option value="square">Square</option>
         </select>
       </label>
 
@@ -65,7 +64,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   generate: [];
   harmonyChange: [
-    type: 'none' | 'complementary' | 'analogous'
+    type: 'none' | 'monochromatic' | 'complementary' | 'analogous' | 'triadic' | 'square'
   ];
   colorCountChange: [count: number];
   addColor: [];
@@ -73,7 +72,7 @@ const emit = defineEmits<{
 }>();
 
 const selectedHarmony =
-  ref<'none' | 'complementary' | 'analogous'>('none');
+  ref<'none' | 'monochromatic' | 'complementary' | 'analogous' | 'triadic' | 'square'>('none');
 
 function onHarmonyChange() {
   emit('harmonyChange', selectedHarmony.value);
