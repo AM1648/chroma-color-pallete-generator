@@ -48,10 +48,6 @@ watch(() => props.visible, (visible) => {
   }
 });
 
-function handleColorChange(color: any) {
-  currentHex.value = color.hex;
-}
-
 function close() {
   emit('close');
 }
