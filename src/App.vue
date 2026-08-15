@@ -16,7 +16,7 @@ import { usePalette } from './composables/usePalette';
 
 const { colors, regenerate, updateColor, setHarmonyType } = usePalette();
 
-function handleHarmonyChange(type: 'none' | 'complementary' | 'analogous') {
+function handleHarmonyChange(type: 'none' | 'monochromatic' | 'complementary' | 'analogous' | 'triadic' | 'square') {
   setHarmonyType(type);
 }
 </script>
