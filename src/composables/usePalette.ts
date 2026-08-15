@@ -44,5 +44,19 @@ export function usePalette() {
     }
   }
 
+<<<<<<< Updated upstream
   return { colors, regenerate, setHarmonyType, harmonyType, updateColor };
+=======
+  return {
+    colors,
+    colorCount,
+    harmonyType,
+    regenerate,
+    setColorCount,
+    addColor,
+    removeColor,
+    setHarmonyType,
+    updateColor
+  };
+>>>>>>> Stashed changes
 }
