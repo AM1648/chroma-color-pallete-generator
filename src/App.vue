@@ -11,6 +11,7 @@
   <PaletteGrid
     :colors="colors"
     @update="updateColor"
+    @toggle-lock="toggleColorLock"
   />
 </template>
 
@@ -27,7 +28,8 @@ const {
   setHarmonyType,
   setColorCount,
   addColor,
-  removeColor
+  removeColor,
+  toggleColorLock
 } = usePalette();
 
 function handleHarmonyChange(type: 'none' | 'monochromatic' | 'complementary' | 'analogous' | 'triadic' | 'square') {
