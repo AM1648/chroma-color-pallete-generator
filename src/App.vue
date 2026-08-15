@@ -1,6 +1,12 @@
 <template>
-  <AppHeader @generate="regenerate" />
-  <PaletteGrid :colors="colors" />
+  <AppHeader
+    @generate="regenerate"
+    @harmonyChange="handleHarmonyChange"
+  />
+  <PaletteGrid
+    :colors="colors"
+    @update="updateColor"
+  />
 </template>
 
 <script setup lang="ts">
@@ -8,9 +14,9 @@ import AppHeader from './components/layout/AppHeader.vue';
 import PaletteGrid from './components/palette/PaletteGrid.vue';
 import { usePalette } from './composables/usePalette';
 
-const { colors, regenerate } = usePalette();
-</script>
+const { colors, regenerate, updateColor, setHarmonyType } = usePalette();
 
-<style lang="scss" scoped>
-// No styles needed - full page handled by children
-</style>
+function handleHarmonyChange(type: 'none' | 'complementary' | 'analogous') {
+  setHarmonyType(type);
+}
+</script>
