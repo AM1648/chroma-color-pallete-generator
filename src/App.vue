@@ -1,7 +1,9 @@
 <template>
   <AppHeader
+    :color-count="colorCount"
     @generate="regenerate"
     @harmonyChange="handleHarmonyChange"
+    @color-count-change="setColorCount"
   />
   <PaletteGrid
     :colors="colors"
@@ -14,7 +16,14 @@ import AppHeader from './components/layout/AppHeader.vue';
 import PaletteGrid from './components/palette/PaletteGrid.vue';
 import { usePalette } from './composables/usePalette';
 
-const { colors, regenerate, updateColor, setHarmonyType } = usePalette();
+const {
+  colors,
+  colorCount,
+  regenerate,
+  updateColor,
+  setHarmonyType,
+  setColorCount
+} = usePalette();
 
 function handleHarmonyChange(type: 'none' | 'complementary' | 'analogous') {
   setHarmonyType(type);
