@@ -23,6 +23,14 @@
 
     <div class="actions">
       <button
+        @click.stop="toggleLock"
+        class="action-btn"
+        :title="color.locked ? 'Unlock color' : 'Lock color'"
+      >
+        {{ color.locked ? 'Locked' : 'Lock' }}
+      </button>
+
+      <button
         @click.stop="openEditor"
         class="action-btn"
         title="Edit color"
@@ -51,6 +59,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   update: [hex: string];
+  'toggle-lock': [];
 }>();
 
 const showModal = ref(false);
@@ -67,6 +76,10 @@ const rgbValue = computed(() => {
 
 function openEditor() {
   showModal.value = true;
+}
+
+function toggleLock() {
+  emit('toggle-lock');
 }
 
 async function copyToClipboard(value: string, type: 'hex' | 'rgb') {

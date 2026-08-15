@@ -11,7 +11,8 @@ export function usePalette() {
 
   const colors = ref<Color[]>(
     generatePalette(colorCount.value).map(hex => ({
-      hex
+      hex,
+      locked: false
     }))
   );
 
@@ -19,11 +20,20 @@ export function usePalette() {
 
   function regenerate() {
     if (harmonyType.value === 'none') {
-      colors.value = generatePalette(
-        colorCount.value
-      ).map(hex => ({
-        hex
-      }));
+      const generatedColors = generatePalette(colorCount.value);
+
+      colors.value = generatedColors.map((hex, index) => {
+        const currentColor = colors.value[index];
+
+        if (currentColor?.locked) {
+          return currentColor;
+        }
+
+        return {
+          hex,
+          locked: false
+        };
+      });
 
       return;
     }
@@ -40,7 +50,7 @@ export function usePalette() {
         | 'monochromatic'
         | 'complementary'
         | 'analogous'
-        | 'triadic' 
+        | 'triadic'
         | 'square'
     );
 
@@ -48,15 +58,24 @@ export function usePalette() {
       return;
     }
 
-    colors.value = Array.from(
+    const nextColors = Array.from(
       { length: colorCount.value },
       (_, index) => ({
         hex:
           harmonyColors[
             index % harmonyColors.length
-          ]
+          ],
+        locked: false
       })
     );
+
+    colors.value = nextColors.map((color, index) => {
+      const currentColor = colors.value[index];
+
+      return currentColor?.locked
+        ? currentColor
+        : color;
+    });
   }
 
   function setColorCount(count: number) {
@@ -80,7 +99,8 @@ export function usePalette() {
       const newColor = generatePalette(1)[0];
 
       colors.value.push({
-        hex: newColor
+        hex: newColor,
+        locked: false
       });
 
       return;
@@ -124,6 +144,18 @@ export function usePalette() {
     }
   }
 
+  function toggleColorLock(index: number) {
+    if (
+      index < 0 ||
+      index >= colors.value.length
+    ) {
+      return;
+    }
+
+    colors.value[index].locked =
+      !colors.value[index].locked;
+  }
+
   return {
     colors,
     colorCount,
@@ -133,6 +165,7 @@ export function usePalette() {
     addColor,
     removeColor,
     setHarmonyType,
-    updateColor
+    updateColor,
+    toggleColorLock
   };
 }
