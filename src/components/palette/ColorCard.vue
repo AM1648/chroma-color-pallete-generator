@@ -1,9 +1,20 @@
 <template>
-  <div class="color-card" :style="{ backgroundColor: color.hex }">
-    <span class="hex">{{ color.hex }}</span>
+  <div
+    class="color-card"
+    :style="{ backgroundColor: color.hex }"
+    @click="copyHex"
+    title="Click to copy hex color"
+  >
+    <span class="hex">
+      {{ copied ? 'Copied!' : color.hex }}
+    </span>
 
     <div class="actions">
-      <button @click="openEditor" class="action-btn" title="Edit color">
+      <button
+        @click.stop="openEditor"
+        class="action-btn"
+        title="Edit color"
+      >
         ✏️
       </button>
     </div>
@@ -31,9 +42,24 @@ const emit = defineEmits<{
 }>();
 
 const showModal = ref(false);
+const copied = ref(false);
 
 function openEditor() {
   showModal.value = true;
+}
+
+async function copyHex() {
+  try {
+    await navigator.clipboard.writeText(props.color.hex);
+
+    copied.value = true;
+
+    window.setTimeout(() => {
+      copied.value = false;
+    }, 1200);
+  } catch (error) {
+    console.error('Failed to copy color to clipboard:', error);
+  }
 }
 
 function handleUpdate(newHex: string) {
@@ -50,6 +76,7 @@ function handleUpdate(newHex: string) {
   justify-content: center;
   height: 100vh;
   position: relative;
+  cursor: pointer;
 
   .hex {
     padding: 0.5rem 1rem;
@@ -60,6 +87,7 @@ function handleUpdate(newHex: string) {
     font-weight: 500;
     letter-spacing: 0.5px;
     backdrop-filter: blur(4px);
+    user-select: none;
   }
 
   .actions {
