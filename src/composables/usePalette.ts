@@ -10,7 +10,7 @@ export function usePalette() {
     generatePalette(DEFAULT_COUNT).map(hex => ({ hex }))
   );
 
-  const harmonyType = ref<'none' | 'complementary' | 'analogous'>('none');
+  const harmonyType = ref<'none' | 'monochromatic' | 'complementary' | 'analogous' | 'triadic' | 'square'>('none');
 
   function regenerate() {
     if (harmonyType.value === 'none') {
@@ -24,7 +24,7 @@ export function usePalette() {
     // Use random base
     const baseHex = generatePalette(1)[0];
 
-    const harmonyColors = generateHarmonyPalette(baseHex, harmonyType.value as 'complementary' | 'analogous');
+    const harmonyColors = generateHarmonyPalette(baseHex, harmonyType.value as 'monochromatic' | 'complementary' | 'analogous' | 'triadic' | 'square');
 
     if (harmonyColors.length === 0) return;
 
@@ -34,7 +34,7 @@ export function usePalette() {
     }));
   }
 
-  function setHarmonyType(type: 'none' | 'complementary' | 'analogous') {
+  function setHarmonyType(type: 'none' | 'monochromatic' | 'complementary' | 'analogous' | 'triadic' | 'square') {
     harmonyType.value = type;
   }
 
