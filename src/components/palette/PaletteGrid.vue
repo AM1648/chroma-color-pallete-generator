@@ -5,6 +5,7 @@
       :key="index"
       :color="color"
       @update="(hex) => $emit('update', index, hex)"
+      @toggle-lock="$emit('toggle-lock', index)"
     />
   </div>
 </template>
@@ -19,6 +20,7 @@ defineProps<{
 
 defineEmits<{
   update: [index: number, hex: string];
+  'toggle-lock': [index: number];
 }>();
 </script>
 
