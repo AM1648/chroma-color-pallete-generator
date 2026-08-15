@@ -6,11 +6,6 @@ import type { Color } from '../types';
 const MIN_COUNT = 1;
 const DEFAULT_COUNT = 5;
 
-type HarmonyType =
-  | 'none'
-  | 'complementary'
-  | 'analogous';
-
 export function usePalette() {
   const colorCount = ref(DEFAULT_COUNT);
 
