@@ -1,11 +1,13 @@
 <template>
   <AppHeader
-    :color-count="colors.length"
+    :color-count="colorCount"
     @generate="regenerate"
     @harmonyChange="handleHarmonyChange"
+    @color-count-change="setColorCount"
     @add-color="addColor"
     @remove-color="removeColor"
   />
+
   <PaletteGrid
     :colors="colors"
     @update="updateColor"
@@ -19,14 +21,18 @@ import { usePalette } from './composables/usePalette';
 
 const {
   colors,
+  colorCount,
   regenerate,
   updateColor,
   setHarmonyType,
+  setColorCount,
   addColor,
   removeColor
 } = usePalette();
 
-function handleHarmonyChange(type: 'none' | 'complementary' | 'analogous') {
+function handleHarmonyChange(
+  type: 'none' | 'complementary' | 'analogous'
+) {
   setHarmonyType(type);
 }
 </script>
